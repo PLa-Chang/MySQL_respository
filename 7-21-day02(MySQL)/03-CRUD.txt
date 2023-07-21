@@ -1,0 +1,235 @@
+mysql> use company_info
+Database changed
+mysql> show tables;
++------------------------+
+| Tables_in_company_info |
++------------------------+
+| dept                   |
+| test                   |
+| user                   |
+| user2                  |
++------------------------+
+4 rows in set (0.01 sec)
+
+mysql> DESC dept;
++----------+-------------+------+-----+---------+-------+
+| Field    | Type        | Null | Key | Default | Extra |
++----------+-------------+------+-----+---------+-------+
+| deptno   | int         | YES  |     | 1       |       |
+| deptname | varchar(20) | YES  |     | NULL    |       |
++----------+-------------+------+-----+---------+-------+
+2 rows in set (0.00 sec)
+
+mysql> SHOW create table dept;
++-------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Table | Create Table
+                                                                                         |
++-------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| dept  | CREATE TABLE `dept` (
+  `deptno` int DEFAULT '1' COMMENT '部门编号',
+  `deptname` varchar(20) DEFAULT NULL COMMENT '部门名称'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci |
++-------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+1 row in set (0.01 sec)
+
+mysql> select * from dept;
++--------+----------------+
+| deptno | deptname       |
++--------+----------------+
+|      3 | 开发喵·人事部 |
+|      9 | 行政部         |
+|      5 | NULL           |
+|      6 | 开发喵·组织部 |
+|      7 | 开发喵·后勤部 |
+|      8 | 开发喵·财务部 |
++--------+----------------+
+6 rows in set (0.00 sec)
+
+mysql> -- 删除 部门名称 为 null 的数据
+mysql> -- 条件中对于 null 值得处理使用 is null 或 is not null
+mysql> DELETE FROM dept where deptname IS NULL;
+Query OK, 1 row affected (0.01 sec)
+
+mysql> SELECT * FROM dept;
++--------+----------------+
+| deptno | deptname       |
++--------+----------------+
+|      3 | 开发喵·人事部 |
+|      9 | 行政部         |
+|      6 | 开发喵·组织部 |
+|      7 | 开发喵·后勤部 |
+|      8 | 开发喵·财务部 |
++--------+----------------+
+5 rows in set (0.00 sec)
+
+mysql> DELETE FROM dept WHERE deptno = 10;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> UPDATE dept SET deptno = 1 WHERE deptname = '行政部';
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> DESC user;
++-------------+-------------+------+-----+---------+-------+
+| Field       | Type        | Null | Key | Default | Extra |
++-------------+-------------+------+-----+---------+-------+
+| name        | varchar(20) | YES  |     | NULL    |       |
+| gender      | char(1)     | YES  |     | NULL    |       |
+| age         | int         | YES  |     | NULL    |       |
+| birth       | date        | YES  |     | NULL    |       |
+| phone       | varchar(20) | YES  |     | NULL    |       |
+| email       | varchar(20) | YES  |     | NULL    |       |
+| create_time | timestamp   | YES  |     | NULL    |       |
++-------------+-------------+------+-----+---------+-------+
+7 rows in set (0.00 sec)
+
+mysql> INSERT INTO user (name, gender, age, phone, email) VALUES('张三', '女', 20, '13212312311', '123@qq.com');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> SELECT * FROM user;
++------+--------+------+-------+-------------+------------+-------------+
+| name | gender | age  | birth | phone       | email      | create_time |
++------+--------+------+-------+-------------+------------+-------------+
+| 张三 | 女     |   20 | NULL  | 13212312311 | 123@qq.com | NULL        |
++------+--------+------+-------+-------------+------------+-------------+
+1 row in set (0.00 sec)
+
+mysql> -- now() 当前日期时间
+mysql> SELECT NOW() FROM dual;
++---------------------+
+| NOW()               |
++---------------------+
+| 2023-07-21 14:54:44 |
++---------------------+
+1 row in set (0.00 sec)
+
+mysql> -- CURRENT_DATE() 当前日期， CURRENT_TIME() 当前时间 CURRENT_TIMESTAMP() 当前时间戳
+mysql> UPDATE user SET create_time = CURRENT_TIMESTAMP() WHERE name='张三';
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> SELECT * FROM user;
++------+--------+------+-------+-------------+------------+---------------------+
+| name | gender | age  | birth | phone       | email      | create_time         |
++------+--------+------+-------+-------------+------------+---------------------+
+| 张三 | 女     |   20 | NULL  | 13212312311 | 123@qq.com | 2023-07-21 14:56:53 |
++------+--------+------+-------+-------------+------------+---------------------+
+1 row in set (0.00 sec)
+
+mysql> -- STR_TO_DATE(STR, format) 将字符串格式化成日期
+mysql> update user set birth = STR_TO_DATE('2002-10-01', '%Y-%m-%d');
+Query OK, 0 rows affected (0.00 sec)
+Rows matched: 1  Changed: 0  Warnings: 0
+
+mysql> SELECT * FROM user;
++------+--------+------+------------+-------------+------------+---------------------+
+| name | gender | age  | birth      | phone       | email      | create_time         |
++------+--------+------+------------+-------------+------------+---------------------+
+| 张三 | 女     |   20 | 2002-10-01 | 13212312311 | 123@qq.com | 2023-07-21 14:56:53 |
++------+--------+------+------------+-------------+------------+---------------------+
+1 row in set (0.00 sec)
+
+mysql> # MySQL中的日期或者时间格式的可以直接使用'2001-01-02'或者'2003-01-02 10:18:19'
+mysql> UPDATE user set birth = '2001-01-02' WHERE name = '张三';
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> SELECT * FROM user;
++------+--------+------+------------+-------------+------------+---------------------+
+| name | gender | age  | birth      | phone       | email      | create_time         |
++------+--------+------+------------+-------------+------------+---------------------+
+| 张三 | 女     |   20 | 2001-01-02 | 13212312311 | 123@qq.com | 2023-07-21 14:56:53 |
++------+--------+------+------------+-------------+------------+---------------------+
+1 row in set (0.00 sec)
+
+mysql> UPDATE user set create_time = '2003-01-02 10:18:19' WHERE name = '张三';
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> SELECT * FROM user;
++------+--------+------+------------+-------------+------------+---------------------+
+| name | gender | age  | birth      | phone       | email      | create_time         |
++------+--------+------+------------+-------------+------------+---------------------+
+| 张三 | 女     |   20 | 2001-01-02 | 13212312311 | 123@qq.com | 2003-01-02 10:18:19 |
++------+--------+------+------------+-------------+------------+---------------------+
+1 row in set (0.00 sec)
+
+mysql> -- in(a, b, c) 值是 a,b,c 都可以
+mysql> SELECT * FROM dept WHERE deptno IN (1, 3, 5, 7, 9);
++--------+----------------+
+| deptno | deptname       |
++--------+----------------+
+|      3 | 开发喵·人事部 |
+|      1 | 行政部         |
+|      7 | 开发喵·后勤部 |
++--------+----------------+
+3 rows in set (0.00 sec)
+
+mysql> -- LIKE 模糊查询.  % 任意多个字符  _任意单个字符
+
+mysql> SELECT * FROM dept WHERE deptname LIKE '开发喵%';
++--------+----------------+
+| deptno | deptname       |
++--------+----------------+
+|      3 | 开发喵·人事部 |
+|      6 | 开发喵·组织部 |
+|      7 | 开发喵·后勤部 |
+|      8 | 开发喵·财务部 |
++--------+----------------+
+4 rows in set (0.00 sec)
+
+mysql> SELECT * FROM dept WHERE deptname LIKE '%开发喵%'; -- 包含开发喵字符
++--------+----------------+
+| deptno | deptname       |
++--------+----------------+
+|      3 | 开发喵·人事部 |
+|      6 | 开发喵·组织部 |
+|      7 | 开发喵·后勤部 |
+|      8 | 开发喵·财务部 |
++--------+----------------+
+4 rows in set (0.00 sec)
+
+mysql> SELECT * FROM dept WHERE deptname LIKE '%开发%喵';
+Empty set (0.00 sec)
+
+mysql> SELECT * FROM dept WHERE deptname LIKE '%开发%喵%';
++--------+----------------+
+| deptno | deptname       |
++--------+----------------+
+|      3 | 开发喵·人事部 |
+|      6 | 开发喵·组织部 |
+|      7 | 开发喵·后勤部 |
+|      8 | 开发喵·财务部 |
++--------+----------------+
+4 rows in set (0.00 sec)
+
+mysql> SELECT * FROM dept WHERE deptname LIKE '开发喵___部';
++--------+----------------+
+| deptno | deptname       |
++--------+----------------+
+|      3 | 开发喵·人事部 |
+|      6 | 开发喵·组织部 |
+|      7 | 开发喵·后勤部 |
+|      8 | 开发喵·财务部 |
++--------+----------------+
+4 rows in set (0.00 sec)
+
+mysql> SELECT * FROM dept WHERE deptname LIKE '__部';
++--------+----------+
+| deptno | deptname |
++--------+----------+
+|      1 | 行政部   |
++--------+----------+
+1 row in set (0.00 sec)
+
+mysql> SELECT * FROM dept WHERE deptname LIKE '%';
++--------+----------------+
+| deptno | deptname       |
++--------+----------------+
+|      3 | 开发喵·人事部 |
+|      1 | 行政部         |
+|      6 | 开发喵·组织部 |
+|      7 | 开发喵·后勤部 |
+|      8 | 开发喵·财务部 |
++--------+----------------+
+5 rows in set (0.00 sec)

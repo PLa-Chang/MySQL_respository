@@ -1,0 +1,188 @@
+
+C:\Users\Administrator>mysql -uroot -p
+Enter password:
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 12
+Server version: 8.0.30 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2022, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> # 查看数据库
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| dept_info          |
+| information_schema |
+| mysql              |
+| performance_schema |
+| sys                |
+| test_info          |
+| user_info          |
++--------------------+
+7 rows in set (0.01 sec)
+
+mysql> -- 创建一张`user_info`表, 可以存储以下内容：姓名，性别，年龄，生日，电话，家庭住址，邮箱
+mysql>  CREATE TABLE `user_info`(
+    ->          `name` VARCHAR(20) COMMENT '姓名',
+    ->          `gender` CHAR(1) COMMENT '性别',
+    ->          `age` INT COMMENT '年龄',
+    ->          `birthday` DATE COMMENT '生日',
+    ->          `phone` VARCHAR(20) COMMENT '电话',
+    ->          `address` VARCHAR(50) COMMENT '住址',
+    ->          `email` VARCHAR(20) COMMENT '邮箱'
+    ->  );
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> use dept_info;
+Database changed
+mysql> # 查看表
+mysql> show tables;
++---------------------+
+| Tables_in_dept_info |
++---------------------+
+| dept                |
++---------------------+
+1 row in set (0.00 sec)
+
+mysql> # 向表中添加数据
+mysql> insert into dept(deptno,deptname) values (2,'研发部');
+Query OK, 1 row affected (0.50 sec)
+
+mysql> #向表中插入多条数据
+mysql> insert into dept(deptno,deptname) values (2,'研发部'),(3,'财务部'),(4,'技术部');
+Query OK, 3 rows affected (0.40 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+mysql> # 简单查询
+mysql> select * from dept ;
++--------+----------+
+| deptno | deptname |
++--------+----------+
+|      2 | 研发部   |
+|      2 | 研发部   |
+|      3 | 财务部   |
+|      4 | 技术部   |
++--------+----------+
+4 rows in set (0.04 sec)
+
+mysql> # 创建表结构一样的表
+mysql> create table dept_c like dept;
+Query OK, 0 rows affected (0.52 sec)
+
+mysql> # 创建和dept表结构以及表中数据一样的表
+mysql> CREATE TABLE t AS select * from dept;
+Query OK, 0 rows affected (0.52 sec)
+
+mysql> # 在dept表中添加列
+mysql> alter table dept add creat_time datetime;
+Query OK, 0 rows affected (0.46 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> # 查看表结构
+mysql> desc dept;
++------------+-------------+------+-----+---------+-------+
+| Field      | Type        | Null | Key | Default | Extra |
++------------+-------------+------+-----+---------+-------+
+| deptno     | int         | YES  |     | 1       |       |
+| deptname   | varchar(30) | YES  |     | NULL    |       |
+| creat_time | datetime    | YES  |     | NULL    |       |
++------------+-------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql> # 修改列
+mysql> alter table dept modify creat_time timestamp;
+Query OK, 4 rows affected (0.49 sec)
+Records: 4  Duplicates: 0  Warnings: 0
+
+mysql> desc dept;
++------------+-------------+------+-----+---------+-------+
+| Field      | Type        | Null | Key | Default | Extra |
++------------+-------------+------+-----+---------+-------+
+| deptno     | int         | YES  |     | 1       |       |
+| deptname   | varchar(30) | YES  |     | NULL    |       |
+| creat_time | timestamp   | YES  |     | NULL    |       |
++------------+-------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql> # 删除表中字段
+mysql> alter table dept drop creat_time;
+Query OK, 0 rows affected (0.38 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> # 修改表名
+mysql> rename table dept_c to dept2;
+Query OK, 0 rows affected (0.43 sec)
+
+mysql> use test_info;
+Database changed
+mysql> rename database test_info to test2;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right 
+ ## 这里有一个问题：就是修改数据库名失败。。。
+
+mysql> # 修改表中某一字段的列名：
+mysql> # 语法：alter table 表名 change old_fields new_fields new_type;
+mysql> alter table dept2 change deptno deptid int;
+Query OK, 0 rows affected (1.67 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> -- INSERT INTO dept(deptno) VALUES(4); 当插入的字段不是全部字段时，只要省略的字段有默认值或可以为null 就可
+以执行
+mysql> INSERT INTO dept(deptno) VALUES(4);
+Query OK, 1 row affected (0.01 sec)
+
+
+mysql> # 插入后查询数据如下所示：
+mysql> select * from dept;
++--------+----------+
+| deptno | deptname |
++--------+----------+
+|      2 | 研发部   |
+|      2 | 研发部   |
+|      3 | 财务部   |
+|      4 | 技术部   |
+|      4 | NULL     |
++--------+----------+
+5 rows in set (0.00 sec)
+
+mysql> # 同时修改多个字段
+mysql> update dept set deptno = 8,deptname = '技术部' where deptno = 3;
+Query OK, 1 row affected (0.40 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> select * from dept;
++--------+----------+
+| deptno | deptname |
++--------+----------+
+|      2 | 研发部   |
+|      2 | 研发部   |
+|      8 | 技术部   |
+|      4 | 技术部   |
+|      4 | NULL     |
++--------+----------+
+5 rows in set (0.00 sec)
+
+mysql> # 更新所有的deptno+1
+mysql> update dept set deptno= deptno + 1;
+Query OK, 5 rows affected (1.72 sec)
+Rows matched: 5  Changed: 5  Warnings: 0
+
+mysql> # 创建和某表结构一样的表
+mysql> create table dept3 as select  * from dept;
+Query OK, 5 rows affected (1.87 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> desc dept3;
++----------+-------------+------+-----+---------+-------+
+| Field    | Type        | Null | Key | Default | Extra |
++----------+-------------+------+-----+---------+-------+
+| deptno   | int         | YES  |     | 1       |       |
+| deptname | varchar(30) | YES  |     | NULL    |       |
++----------+-------------+------+-----+---------+-------+
+2 rows in set (0.00 sec)

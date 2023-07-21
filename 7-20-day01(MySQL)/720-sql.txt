@@ -1,0 +1,52 @@
+mysql> # mysql注释，注释表示不会执行
+mysql> -- 也是MySQL注释
+mysql> ;
+ERROR:
+No query specified
+
+mysql> # 创建数据库
+mysql> CREATE DATABASE company_info;
+Query OK, 1 row affected (0.01 sec)
+
+mysql> # 使用 IF NOT EXISTS 选项，表示如果数据库不存在就创建，如果存在则不创建
+mysql> CREATE DATABASE IF NOT EXISTS company_info;
+Query OK, 1 row affected, 1 warning (0.01 sec)
+
+mysql> -- 选择要执行操作的数据库
+mysql> USE company_info
+Database changed
+mysql> -- 显示所有的数据库
+mysql> SHOW DATABASES;
++--------------------+
+| Database           |
++--------------------+
+| company_info       |
+| information_schema |
+| mysql              |
+| performance_schema |
+| sys                |
++--------------------+
+5 rows in set (0.01 sec)
+
+mysql> USE company_info;
+Database changed
+mysql> # 创建数据库并设置编码
+mysql> CREATE DATABASE test CHARACTER set utf8;
+Query OK, 1 row affected, 1 warning (0.01 sec)
+
+mysql> DROP DATABASE test;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> CREATE TABLE `dept`(`deptno` INT DEFAULT 1 COMMENT '部门编号', `deptname` VARCHAR(20) COMMENT '部门名称');
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> show tables;
++------------------------+
+| Tables_in_company_info |
++------------------------+
+| dept                   |
++------------------------+
+1 row in set (0.00 sec)
+
+
+创建一张`user`表, 可以存储以下内容：姓名，性别，年龄，生日，电话，家庭住址，邮箱
