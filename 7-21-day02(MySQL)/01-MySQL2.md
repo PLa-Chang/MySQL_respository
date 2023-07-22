@@ -135,8 +135,6 @@ DESCRIBE dept;
 DESC dept;
 ```
 
-![QQ截图20191106200120](E:\work\notes\19.mysql\img\QQ截图20191106200120.png)
-
 
 
 练习：
@@ -294,6 +292,26 @@ TRUNCATE TABLE dept;
 `like`
 
 ​    模糊查询,  % 表示任意个字符  _ 表示一个字符
+## 单行函数
+  -  length 计算长度
+
+     - SELECT length("123");
+
+      -  select length(字段) from 表；
+
+
+- upper/lower 大、小写转换
+
+  - SELECT UPPER("a"), LOWER('A');
+
+  - select upper(字段),lower(字段) from 表；
+
+
+- concat 字符串拼接
+
+  - SELECT CONCAT(upper('smith'),'john');
+
+  - select concat(字段1, 字段2) from 表；
 
 # 数据备份和还原
 
